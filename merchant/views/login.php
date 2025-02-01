@@ -1,5 +1,5 @@
 <?php
-session_start(); // Start the session to display session messages
+session_start();
 ?>
 
 <!DOCTYPE html>
@@ -7,38 +7,38 @@ session_start(); // Start the session to display session messages
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merchant Login - Bank Management System</title>
+    <title>Login - Bank Management System</title>
     <link rel="stylesheet" href="../css/mystyle.css">
 </head>
 <body>
-    <!-- Displaying session messages -->
-    <?php if (isset($_SESSION['error_message'])): ?>
-        <p style="color: red;"><?php echo $_SESSION['error_message']; unset($_SESSION['error_message']); ?></p>
-    <?php endif; ?>
-
-    <?php if (isset($_SESSION['message'])): ?>
-        <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
-    <?php endif; ?>
-
-    <form method="POST" action="../control/log_control.php">
+    <form id="login-form" method="POST" action="../control/log_control.php">
         <table align="center">
             <tr>
                 <td>
                     <div>
                         <fieldset>
                             <legend>Merchant Login</legend>
+
                             <label for="email">Email:</label>
-                            <input type="email" name="email" id="email" required><br><br>
+                            <input type="email" name="email" id="email">
+                            <div id="email-error"></div><br><br>
 
                             <label for="password">Password:</label>
-                            <input type="password" name="password" id="password" required><br><br>
+                            <input type="password" name="password" id="password">
+                            <div id="password-error"></div><br><br>
 
-                            <input type="submit" value="Log In">
+                            <input type="submit" class="loginbutton" value="Login"><br><br>
+
+                            <!-- Links for Sign Up and Forgot Password -->
+                            <p>Don't have an account? <a href="signup.php">Sign Up</a></p>
+                            <p><a href="forgot_password.php">Forgot Password?</a></p>
                         </fieldset>
                     </div>
                 </td>
             </tr>
         </table>
     </form>
+
+    <script src="../js/login_validation.js"></script>
 </body>
 </html>

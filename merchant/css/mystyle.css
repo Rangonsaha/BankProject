@@ -1,134 +1,145 @@
-/* General Styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f2f2f2;
+/* General reset for margin and padding */
+* {
     margin: 0;
     padding: 0;
-    color: #111;
-}
-
-h2.merchantSignup {
-    font-size: 2em;
-    color: #111;
-    text-align: center;
-    margin-top: 30px;
-    font-weight: 700;
-}
-
-form {
+    box-sizing: border-box;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  /* Centered form container */
+  form {
+    width: 50%; /* Set the width of the form to 50% of the viewport for a desktop */
     background-color: white;
+    padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-table {
-    width: 100%;
-    margin: 0 auto;
-}
-
-fieldset {
-    border: none;
-    padding: 0;
-}
-
-legend {
-    text-align: center;
-    font-size: 1.5em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 30px; /* Add some space from the top */
+    text-align: left;
+  }
+  
+  /* Styling for the legend tag (Customer Sign-Up, Customer Login) */
+  legend {
+    font-size: 1.8em;
     font-weight: bold;
-    color: #ff9900; /* Amazon's signature orange */
+    color: #4A90E2; /* Green color for the title */
+    padding: 10px 0;
+    text-align: center;
     margin-bottom: 20px;
-}
-
-/* Input & Label Styles */
-label {
-    font-size: 0.9em;
-    margin-bottom: 8px;
-    display: block;
-    color: #555;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-textarea,input,
-select {
+  }
+  
+  /* Form Heading */
+  h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+  
+  /* Table Styling for Inputs */
+  table {
     width: 100%;
-    padding: 5px 15px;
-    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  
+  table td {
+    padding: 12px;
+    vertical-align: top;
+  }
+  
+  table td label {
+    font-weight: 600;
+    color: #555;
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="url"], input[type="website"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
     border: 1px solid #ccc;
+    border-radius: 5px;
     font-size: 1em;
-    background-color: #fafafa;
-    box-sizing: border-box; /* Ensures padding is included in width/height */
-}
-
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-textarea:focus,
-select:focus {
-    border-color: #ff9900;
-    box-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
-}
-
-/* Button Styles */
-input[type="submit"] {
-    background-color: #ff9900;
+    box-sizing: border-box;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  
+  select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  input[type="radio"] {
+    margin-right: 5px;
+  }
+  
+  /* Button Styling */
+  input[type="submit"], button {
+    background-color: #4A90E2;
     color: white;
-    padding: 12px 15px;
+    padding: 14px;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
     font-size: 1.1em;
-    width: 100%; /* Make the button the same width as input fields */
-    transition: background-color 0.3s ease;
-    box-sizing: border-box; /* Ensures padding is included in width/height */
-}
-
-input[type="submit"]:hover {
-    background-color: #e68a00;
-}
-
-input[type="submit"]:active {
-    background-color: #cc7a00;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+  }
+  
+  input[type="submit"]:hover, button:hover {
+    background-color: #4A90E2;
+  }
+  
+  /* Link Styling */
+  .signup-link, .login-link {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 1em;
+  }
+  
+  .signup-link a, .login-link a {
+    color: #4A90E2;
+    text-decoration: none;
+  }
+  
+  .signup-link a:hover, .login-link a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Additional Responsive Adjustments (for desktop focus) */
+  @media (min-width: 1024px) {
     form {
-        padding: 30px;
+        width: 40%; /* For large desktop screens, set width to 40% */
     }
+  }
 
-    h2.merchantSignup {
-        font-size: 1.6em;
-    }
-
-    label {
-        font-size: 0.85em;
-    }
-
-    input[type="submit"] {
-        font-size: 1em;
-    }
-}
-
-@media (max-width: 480px) {
-    form {
-        padding: 20px;
-    }
-
-    h2.merchantSignup {
-        font-size: 1.4em;
-    }
-
-    label {
-        font-size: 0.8em;
-    }
-
-    input[type="submit"] {
-        font-size: 0.9em;
-    }
-}
+  #email-error, #password-error, .error-message{
+    color: red;
+  }

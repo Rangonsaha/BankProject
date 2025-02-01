@@ -1,83 +1,64 @@
 <?php
-session_start(); // Start the session to handle session data
-include '../model/db.php';
+session_start();
+
+// Include the database connection and functions
+require_once('../model/db.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-    $file_path = __DIR__ . '/../data/userdata.json';
+    $errors = [];
 
-    // Check if the userdata file exists
-    if (file_exists($file_path)) {
-        $json_data = file_get_contents($file_path);
-        $users = json_decode($json_data, true) ?? [];
-
-        // Loop through users and verify email and password
-        foreach ($users as $user) {
-            if ($user['email'] === $email && password_verify($password, $user['password'])) {
-                // Set session variables for the logged-in user
-                $_SESSION['loggedin_user'] = $user;
-                $_SESSION['loggedin'] = true;
-
-                // Initialize DB connection
-                $db = new myDB();
-                $connection = $db->openCon();
-
-                // Check if the user already exists in the merchant table by email
-                $sql_check = "SELECT * FROM merchant WHERE Email = ?";
-                $stmt_check = $connection->prepare($sql_check);
-                $stmt_check->bind_param("s", $email);
-                $stmt_check->execute();
-                $result_check = $stmt_check->get_result();
-
-                // If user already exists in the merchant table, do not insert data again
-                if ($result_check->num_rows > 0) {
-                    // Optionally, you can redirect to the dashboard page here instead of echoing
-                    $_SESSION['message'] = "User data already exists in the database.";
-                } else {
-                    // Ensure password is hashed before saving
-                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-                    $merchant_name = $user['merchant_name'];
-                    $business_name = $user['business_name'];
-
-                    // Insert user data into the merchant table
-                    $sql_insert = "INSERT INTO merchant (Name, Email, Password, BusinessName) 
-                                   VALUES (?, ?, ?, ?)";
-                    $stmt_insert = $connection->prepare($sql_insert);
-
-                    if ($stmt_insert) {
-                        $stmt_insert->bind_param("ssss", $merchant_name, $email, $hashed_password, $business_name);
-
-                        if ($stmt_insert->execute()) {
-                            $_SESSION['message'] = "Data inserted successfully into the merchant table.";
-                        } else {
-                            $_SESSION['error_message'] = "Error inserting data: " . $stmt_insert->error;
-                        }
-
-                        $stmt_insert->close();
-                    } else {
-                        $_SESSION['error_message'] = "Error preparing statement: " . $connection->error;
-                    }
-                }
-
-                $stmt_check->close();
-                $db->closeCon($connection);
-
-                // Redirect to the welcome page or dashboard after successful login
-                header('Location: ../views/welcome.php');
-                exit;
-            }
-        }
-
-        // If no matching user is found
-        $_SESSION['error_message'] = "Email or password is incorrect. Please try again.";
-    } else {
-        $_SESSION['error_message'] = "No user data found. Please register first.";
+    // Validate Email
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    if (empty($email)) {
+        $errors[] = "Email is required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
     }
 
-    // Redirect to the login page with the error message if no match
-    header('Location: ../views/login.php');
-    exit;
+    // Validate Password
+    $password = trim($_POST['password']);
+    if (empty($password)) {
+        $errors[] = "Password is required.";
+    }
+
+    if (empty($errors)) {
+        // Check if the email exists in the database
+        $merchant = getMerchantByEmail($email);
+
+        if ($merchant) {
+            // Debugging: Output the merchant details to confirm the email match
+            echo "<pre>";
+            print_r($merchant); // Display all merchant data from the database
+            echo "</pre>";
+
+            // Compare the entered password with the stored plain-text password
+            if ($password === $merchant['Password']) {
+                // Set session variables
+                $_SESSION['merchant_id'] = $merchant['MerchantId'];
+                $_SESSION['merchant_name'] = $merchant['Name'];
+                $_SESSION['merchant_email'] = $merchant['Email'];
+
+                // Debugging: Output session data to confirm it's set
+                echo "<pre>";
+                print_r($_SESSION); // Display session variables
+                echo "</pre>";
+
+                // Redirect to the dashboard or profile page
+                header("Location: ../views/dashboard.php");
+                exit();
+            } else {
+                $errors[] = "Invalid password.";
+            }
+        } else {
+            $errors[] = "No account found with this email.";
+        }
+    }
+
+    // Display errors if any
+    if (!empty($errors)) {
+        foreach ($errors as $error) {
+            echo "<p style='color: red;'>$error</p>";
+        }
+    }
 }
 ?>

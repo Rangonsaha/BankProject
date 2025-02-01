@@ -1,0 +1,45 @@
+.feedback-container {
+    width: 50%;
+    margin: 50px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.feedback-container h2 {
+    margin-bottom: 20px;
+}
+
+.feedback-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.feedback-container label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.feedback-container select,
+.feedback-container textarea {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.feedback-container button {
+    margin-top: 20px;
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.feedback-container button:hover {
+    background: #218838;
+}

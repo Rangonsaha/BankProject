@@ -1,171 +1,118 @@
-/* Reset default margin, padding, and font */
+/* General reset for margin and padding */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
 
-/* Body styles */
+/* Body Styling */
 body {
-  background-color: #f4f4f4;
-  color: #333;
-  font-size: 16px;
-  line-height: 1.6;
-  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
 }
 
-/* Container to center the form */
-.center-container {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Centered form container */
+form {
+  width: 50%; /* Set the width of the form to 50% of the viewport for a desktop */
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 30px; /* Add some space from the top */
+  text-align: left;
 }
 
-/* Title Styles */
-h1 {
+/* Styling for the legend tag (Customer Sign-Up, Customer Login) */
+legend {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #4CAF50; /* Green color for the title */
+  padding: 10px 0;
   text-align: center;
-  font-size: 28px;
   margin-bottom: 20px;
+}
+
+/* Form Heading */
+h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
   color: #333;
 }
 
-/* Form styles */
-form {
-  display: flex;
-  flex-direction: column;
+/* Table Styling for Inputs */
+table {
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-/* Input Fields */
-input[type="text"],
-input[type="password"],
-input[type="date"],
-input[type="email"],
-input[type="tel"],
-input[type="number"],
-input[type="radio"] {
+table td {
+  padding: 12px;
+  vertical-align: top;
+}
+
+table td label {
+  font-weight: 600;
+  color: #555;
+  display: block;
+  margin-bottom: 6px;
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
+  padding: 12px;
+  margin-top: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
-  outline: none;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-input[type="tel"]:focus,
-input[type="number"]:focus,
-input[type="radio"]:focus {
-  border-color: #007bff;
+  font-size: 1em;
+  box-sizing: border-box;
 }
 
 input[type="radio"] {
-  width: auto;
+  margin-right: 5px;
 }
 
-/* Button Styles */
+/* Button Styling */
 button {
-  background-color: #007bff;
+  background-color: #4CAF50;
   color: white;
-  padding: 12px;
+  padding: 14px;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 1.1em;
   cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
   transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
 }
 
-/* Centering the button and adding space */
-button[type="submit"] {
-  width: 100%;
-  margin-top: 20px;
-}
-
-/* Link Styles (for signup and other links) */
-a {
+/* Link Styling */
+.signup-link, .login-link {
+  margin-top: 15px;
   text-align: center;
-  font-size: 14px;
-  color: #007bff;
-  text-decoration: none;
-  margin-top: 20px;
+  font-size: 1em;
 }
 
-a:hover {
+.signup-link a, .login-link a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+.signup-link a:hover, .login-link a:hover {
   text-decoration: underline;
 }
 
-/* Table styling inside the form */
-table {
-  width: 100%;
-  margin-top: 20px;
-}
-
-table td {
-  padding: 8px;
-}
-
-/* Center text inside table cells */
-table td label {
-  font-weight: bold;
-}
-
-/* Error Message Styling */
-p[style*="color:red"] {
-  color: red;
-  font-size: 14px;
-  text-align: center;
-  margin-top: 10px;
-}
-
-/* Success Message Styling */
-p[style*="color:green"] {
-  color: green;
-  font-size: 14px;
-  text-align: center;
-  margin-top: 10px;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  body {
-      padding: 10px;
-  }
-
-  .center-container {
-      width: 90%;
-      padding: 15px;
-  }
-
-  h1 {
-      font-size: 24px;
-  }
-
-  input[type="text"],
-  input[type="password"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="number"] {
-      font-size: 14px;
-      padding: 8px;
-  }
-
-  button {
-      font-size: 14px;
-      padding: 10px;
+/* Additional Responsive Adjustments (for desktop focus) */
+@media (min-width: 1024px) {
+  form {
+      width: 40%; /* For large desktop screens, set width to 40% */
   }
 }

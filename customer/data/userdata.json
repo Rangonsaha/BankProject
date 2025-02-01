@@ -82,5 +82,33 @@
         "state": "dhaka 1200",
         "zip": "1234",
         "password": "$2y$10$5eKUSx\/gItqu8rnURyICLuir4qZNCmDiQUwJWZUAOiEwTDldlK3ru"
+    },
+    {
+        "fullName": "Dip",
+        "lastName": "achorjee",
+        "dob": "2000-01-12",
+        "gender": "Male",
+        "email": "dip@gmail.com",
+        "phone": "01772866428",
+        "NID": "1234",
+        "address": "Dhaka, Bangladesh",
+        "city": "Dhaka",
+        "state": "dhaka 1200",
+        "zip": "1234",
+        "password": "$2y$10$.OK6iYDYELxFBNm.god.4.Cxvkl..IjXf9.kPgZY6v5tsH7\/wJT.W"
+    },
+    {
+        "fullName": "Rongon",
+        "lastName": "saha",
+        "dob": "2000-11-10",
+        "gender": "Male",
+        "email": "rongon@gmail.com",
+        "phone": "01772866428",
+        "NID": "1234",
+        "address": "Dhaka, Bangladesh",
+        "city": "Dhaka",
+        "state": "dhaka 1200",
+        "zip": "1234",
+        "password": "$2y$10$XJxgnIAKEZRjHa0nQPiSueZoSWpRu8ZUIS04SvCc\/UCugfZhX1zqe"
     }
 ]

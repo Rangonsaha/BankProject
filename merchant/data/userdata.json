@@ -192,15 +192,27 @@
         "payment_method": "Bank Transfer"
     },
     {
-        "merchant_name": "Rongon Saha",
-        "email": "rongonkumar27@aiub.edu",
-        "password": "$2y$10$D2qMQ\/TN6NdG0oKZD17K\/OlUZ2o6eDryuSnhlAGPk8xHkzw3sCkim",
-        "business_name": "fasf",
+        "merchant_name": "Rangon Kumar Shaha",
+        "email": "22-46585-1@student.aiub.edu",
+        "password": "$2y$10$42mEZvzAtXB0.jk4i7MrWOc3ZebhK84WqVU2a8xariHy5nXCUxyti",
+        "business_name": "Food",
         "business_reg_number": "1234",
-        "business_type": "1234",
-        "business_address": "dhaka",
+        "business_type": "govt",
+        "business_address": "Dhaka, Bangladesh",
         "contact_number": "01772866428",
-        "business_website": "http:\/\/localhost\/BankManagementSystem\/views\/signup.php?",
-        "payment_method": "Credit Card"
+        "business_website": "http:\/\/localhost\/BankManagementSystem\/views\/signup.php",
+        "payment_method": "Bank Transfer"
+    },
+    {
+        "merchant_name": "Rangon Kumar Shaha",
+        "email": "22-46585-1@student.aiub.edu",
+        "password": "1234qwer",
+        "business_name": "Food",
+        "business_reg_number": "1234",
+        "business_type": "govt",
+        "business_address": "Dhaka, Bangladesh",
+        "contact_number": "01772866428",
+        "business_website": "http:\/\/localhost\/BankManagementSystem\/views\/signup.php",
+        "payment_method": "Bank Transfer"
     }
 ]

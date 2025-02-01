@@ -1,0 +1,126 @@
+/* Reset and Base Styling */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+a {
+    text-decoration: none;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Header Styling */
+.header {
+    background-color: #022143;
+    color: #fff;
+    padding: 0.5rem ;
+   
+}
+
+.header h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.header nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    gap: 1.5rem;
+}
+
+.header nav a {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    
+}
+
+.header nav a:hover {
+    color: #d6e4ff;
+}
+
+.logout {
+    color: #ffdddd;
+}
+
+.logout:hover {
+    color: #ffc6c6;
+}
+
+/* Dashboard Section */
+.dashboard {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.dashboard h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #032c58;
+}
+
+.dashboard p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: #555;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 0 15px;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    
+}
+
+.dashboard-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #032c58;
+}
+
+.dashboard-card p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    background-color: #033365;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.7rem 1.2rem;
+    border-radius: 5px;
+    
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+

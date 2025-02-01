@@ -1,0 +1,126 @@
+/* General reset for margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Center the content */
+.center-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Heading styling */
+h1 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+table td strong {
+    font-weight: bold;
+}
+
+/* Account details table styling */
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Button styling */
+.button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: #45a049;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    table {
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    table td {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+
+    .button {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+
+    table td {
+        font-size: 0.85em;
+    }
+
+    table {
+        width: 100%;
+        margin: 15px 0;
+    }
+
+    .button {
+        font-size: 1em;
+        padding: 12px;
+    }
+}
+
+/* Larger screens */
+@media (min-width: 1200px) {
+    .center-container {
+        padding: 40px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+    }
+
+    .button {
+        font-size: 1.3em;
+    }
+}

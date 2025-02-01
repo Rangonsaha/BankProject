@@ -1,14 +1,14 @@
 <?php
 session_start();
-require '../model/db.php'; // Include your database handling class
+require '../model/db.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve inputs
+   
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
     $errors = [];
 
-    // Input validation
+    
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Invalid email format.";
     }
@@ -18,53 +18,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($errors)) {
-        // Create database object
+        
         $db = new myDB();
         $connection = $db->openCon();
 
-        // Prepare and execute query to fetch user data
-        $stmt = $connection->prepare("SELECT * FROM admin WHERE email = ?");
-        $stmt->bind_param("s", $email);
+        
+        $username_or_email = $email; 
+$stmt = $connection->prepare("SELECT * FROM admin WHERE email = ? OR username = ?");
+$stmt->bind_param("ss", $email, $email);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        // Check if user exists
+        
         if ($result && $result->num_rows === 1) {
             $user = $result->fetch_assoc();
 
-            // Verify the password
+            
             if (password_verify($password, $user['password'])) {
-                // Password is correct, store user data in session
+                
                 $_SESSION['user'] = [
-                    'id' => $user['AdminId'], // Store the user's ID in session
-                    'email' => $user['email'], // Store the user's email in session
+                    'id' => $user['AdminId'], 
+                    'email' => $user['email'], 
                 ];
 
-                // Redirect to welcome page
+                
+                if (isset($_POST['remember'])) {
+                    setcookie('user_email', $user['email'], time() + (86400 * 30), "/"); // Remember email for 30 days
+                }
+
+                
                 header("Location: ../view/welcome.php");
                 exit();
             } else {
-                // Password is incorrect
+               
                 $errors[] = "Invalid email or password.";
             }
         } else {
-            // No user found with that email
+            
             $errors[] = "Invalid email or password.";
         }
 
-        // Close the prepared statement and database connection
+        
         $stmt->close();
         $db->closeCon($connection);
     }
 
-    // If there are errors, display them
+   
     if (!empty($errors)) {
         foreach ($errors as $error) {
             echo "<p>$error</p>";
         }
     }
 } else {
-    // Redirect to login page if the form is not submitted via POST
+   
     header("Location: ../view/login.php");
     exit();
 }
+?> 

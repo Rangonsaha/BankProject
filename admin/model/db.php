@@ -3,17 +3,17 @@
 class myDB {
     private $connectionObject;
 
-    // Open connection to the database
+    
     public function openCon() {
         $DBHost = "localhost";
         $DBUser = "root";
         $DBPassword = "";
         $DBName = "bankmanagementsystem";
 
-        // Create connection
+       
         $this->connectionObject = new mysqli($DBHost, $DBUser, $DBPassword, $DBName);
 
-        // Check connection
+       
         if ($this->connectionObject->connect_error) {
             die("Connection failed: " . $this->connectionObject->connect_error);
         }
@@ -21,60 +21,114 @@ class myDB {
         return $this->connectionObject;
     }
 
-    // Fetch all admin data from the admin table
+    
     public function getAdmins() {
         $connectionObject = $this->openCon();
 
-        // Prepare query to fetch all admins
+        
         $stmt = $connectionObject->prepare("SELECT * FROM admin");
         if (!$stmt) {
             die("Error preparing statement: " . $connectionObject->error);
         }
 
-        // Execute query and fetch result
+        
         $stmt->execute();
         $result = $stmt->get_result();
 
-        // Close the prepared statement and connection
+       
         $stmt->close();
         $this->closeCon($connectionObject);
 
-        return $result; // Return the result set
+        return $result; 
     }
 
-    // Insert data into the specified table
+   
     public function insertData($table, $columns, $values) {
         $connectionObject = $this->openCon();
 
-        // Dynamically build placeholders for prepared statements
+     
         $placeholders = implode(", ", array_fill(0, count($values), "?"));
         $columnsString = implode(", ", $columns);
 
-        // Prepare query to insert data
         $stmt = $connectionObject->prepare("INSERT INTO $table ($columnsString) VALUES ($placeholders)");
         if (!$stmt) {
             die("Error preparing statement: " . $connectionObject->error);
         }
 
-        // Dynamically bind parameters
-        $types = str_repeat("s", count($values)); // Assuming all inputs are strings
+       
+        $types = str_repeat("s", count($values)); 
         $stmt->bind_param($types, ...$values);
 
-        // Execute and check if insertion is successful
+        
         if ($stmt->execute()) {
             $result = true;
         } else {
             $result = "Error: " . $stmt->error;
         }
 
-        // Close the statement and connection
+        
         $stmt->close();
         $this->closeCon($connectionObject);
 
-        return $result; // Return the result status
+        return $result; 
     }
 
-    // Close the database connection
+    
+    public function getMerchants() {
+        $connection = $this->openCon();
+        $query = "SELECT Name, Email, BusinessName FROM merchant"; 
+        $result = $connection->query($query);
+        return $result;
+    }
+
+    
+    public function getEmployees() {
+        $connection = $this->openCon();
+        $query = "SELECT Name, Email, Gender FROM employee"; 
+        $result = $connection->query($query);
+        return $result;
+    }
+
+    
+    public function insertAdminData($full_name, $username, $email, $password, $phone_number, $role, $employee_id, $address, $security_question, $profile_picture, $default_language, $time_zone) {
+        return $this->insertData(
+            'admin',
+            ['full_name', 'username', 'email', 'password', 'phone_number', 'role', 'employee_id', 'address', 'security_question', 'default_language', 'time_zone'],
+            [$full_name, $username, $email, $password, $phone_number, $role, $employee_id, $address, $security_question, $default_language, $time_zone]
+        );
+    }
+
+    
+    public function getTransactions() {
+        $connectionObject = $this->openCon();
+
+        
+        $stmt = $connectionObject->prepare("SELECT * FROM transaction");
+        if (!$stmt) {
+            die("Error preparing statement: " . $connectionObject->error);
+        }
+
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        
+        $stmt->close();
+        $this->closeCon($connectionObject);
+
+        return $result; 
+    }
+
+    
+    public function insertTransaction($accountId, $amount, $transactionType, $date, $initiatedBy) {
+        return $this->insertData(
+            'transaction',
+            ['AccountId', 'Amount', 'TransactionType', 'Date', 'InitiatedBy'],
+            [$accountId, $amount, $transactionType, $date, $initiatedBy]
+        );
+    }
+
+    
     public function closeCon($connectionObject) {
         $connectionObject->close();
     }

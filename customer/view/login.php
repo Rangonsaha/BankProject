@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="../css/mystyle.css">
 </head>
 <body>
-    <form action="../control/login_control.php" method="post">
+    <form action="../control/login_control.php" method="post" class="login-form">
         <center>
             <fieldset>
-                <p>Customer Login</p>
+                <legend>Customer Login</legend>
                 <table>
                     <tr>
                         <td><label for="email">Email:</label></td>
@@ -25,14 +25,10 @@
         </center>
         <center>
             <button type="submit" class="button">Login</button>
+            <p class="signup-link">
+                Don't have an account? <a href="signup.php">Sign up here</a>
+            </p>
         </center>
     </form>
-
-    <center>
-        <!-- Sign Up Button -->
-        <a href="signup.php">
-            <button class="button">Sign Up</button>
-        </a>
-    </center>
 </body>
 </html>

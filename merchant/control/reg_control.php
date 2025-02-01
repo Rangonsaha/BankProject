@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once('../model/db.php'); // Include database connection and functions
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];
@@ -10,13 +11,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Full Name must be at least 4 characters.";
     }
 
-    // Validate Email 
+    // Validate Email (must be an AIUB student email)
     $email = trim($_POST['email']);
-    if (!preg_match("/^[a-zA-Z0-9._%+-]+@aiub\.edu$/", $email)) {
+    if (!preg_match("/^[a-zA-Z0-9._%+-]+@student\.aiub.edu$/", $email)) {
         $errors[] = "Email is required and must be a valid aiub.edu email address.";
     }
 
-    // Validate Password (at least 6 characters)
+    // Validate Password (at least 6 characters) - Stored as plain text
     $password = trim($_POST['password']);
     if (strlen($password) < 6) {
         $errors[] = "Password must be at least 6 characters long.";
@@ -46,27 +47,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Business Address is required.";
     }
 
-    // Validate Contact Number
+    // Validate Contact Number (must be numeric)
     $contact_number = trim($_POST['contact_number']);
     if (!ctype_digit($contact_number)) {
         $errors[] = "Contact Number must contain only numbers.";
     }
 
+    // Validate Business Website (optional)
     $business_website = trim($_POST['business_website']);
     if (!empty($business_website) && !filter_var($business_website, FILTER_VALIDATE_URL)) {
         $errors[] = "Business Website must be a valid URL.";
     }
 
+    // Validate Payment Method
     $payment_method = $_POST['payment_method'];
     if (empty($payment_method)) {
         $errors[] = "Please select a payment method.";
     }
 
+    // If there are no validation errors, process the data
     if (empty($errors)) {
-        $user_data = [
+        // Save data in an associative array
+        $merchant_data = [
             'merchant_name' => $merchant_name,
             'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT), // Hash the password
+            'password' => $password, // Storing password as plain text
             'business_name' => $business_name,
             'business_reg_number' => $business_reg_number,
             'business_type' => $business_type,
@@ -76,11 +81,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'payment_method' => $payment_method,
         ];
 
+        // Save data to userdata.json
         $data_dir = __DIR__ . '/../data';
         $file_path = $data_dir . '/userdata.json';
 
         if (!is_dir($data_dir)) {
-            mkdir($data_dir,  true);
+            mkdir($data_dir, 0777, true);
         }
 
         $existing_data = [];
@@ -89,13 +95,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $existing_data = json_decode($json_data, true) ?? [];
         }
 
-        $existing_data[] = $user_data;
+        $existing_data[] = $merchant_data;
+        file_put_contents($file_path, json_encode($existing_data, JSON_PRETTY_PRINT));
 
-        if (file_put_contents($file_path, json_encode($existing_data, JSON_PRETTY_PRINT))) {
+        // Insert data into MySQL database
+        if (insertMerchant($merchant_data)) {
             setcookie('user_email', $email, time() + (86400 * 30), "/"); // Cookie to remember email
-            echo "User data successfully saved to userdata.json.";
+            header("Location: ../views/dashboard.php");
         } else {
-            echo "Error: Unable to save user data.";
+            echo "Error: Unable to register merchant.";
         }
     } else {
         foreach ($errors as $error) {
@@ -103,3 +111,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+?>

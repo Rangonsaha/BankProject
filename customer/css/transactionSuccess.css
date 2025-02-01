@@ -1,0 +1,36 @@
+.success-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #e9f7e9;
+    border: 1px solid #a4d3a4;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.success-container h2 {
+    color: #28a745;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.success-container p {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.success-container .back-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: #fff;
+    background: #28a745;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.success-container .back-link:hover {
+    background: #218838;
+}
