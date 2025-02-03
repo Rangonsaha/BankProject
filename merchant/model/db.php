@@ -1,280 +1,144 @@
 <?php
-// Database credentials
-$host = 'localhost';  // Replace with your database host if different
-$dbname = 'bankmanagementsystem';
-$username = 'root';   // Replace with your database username
-$password = '';       // Replace with your database password
+function openCon() {
+    $DBHost = "localhost";
+    $DBuser = "root";
+    $DBpassword = "";
+    $DBname = "bankmanagementsystem"; 
+    
+    $connectionObject = new mysqli($DBHost, $DBuser, $DBpassword, $DBname);
 
-// Create a PDO connection
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+    if ($connectionObject->connect_error) {
+        die("Connection failed: " . $connectionObject->connect_error);
+    }
+
+    return $connectionObject;
 }
 
-// Function to insert merchant data
-function insertMerchant($merchant_data) {
-    global $pdo;
-
-    // Prepare SQL query to insert the merchant data into the database
-    $query = "INSERT INTO merchant (BusinessName, Email, Name, Password) 
-              VALUES (:business_name, :email, :merchant_name, :password)";
-    
-    $stmt = $pdo->prepare($query);
-
-    // Bind the data to the query
-    $stmt->bindParam(':business_name', $merchant_data['business_name']);
-    $stmt->bindParam(':email', $merchant_data['email']);
-    $stmt->bindParam(':merchant_name', $merchant_data['merchant_name']);
-    $stmt->bindParam(':password', $merchant_data['password']); // Store the password in plain text
-
-    // Execute the query and return success/failure
+function insertMerchant($conn, $merchant_data) {
+    $query = "INSERT INTO merchant (BusinessName, Email, Name, Password) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssss", $merchant_data['business_name'], $merchant_data['email'], $merchant_data['merchant_name'], $merchant_data['password']);
     return $stmt->execute();
 }
 
-// Function to check if email already exists
-function emailExists($email) {
-    global $pdo;
-
-    $query = "SELECT * FROM merchant WHERE Email = :email";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':email', $email);
+function emailExists($conn, $email) {
+    $query = "SELECT * FROM merchant WHERE Email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
-
-    // If a record is found, return true (email exists)
-    return $stmt->rowCount() > 0;
+    $stmt->store_result();
+    return $stmt->num_rows > 0;
 }
 
-// Function to fetch merchant data by email (for login)
-function getMerchantByEmail($email) {
-    global $pdo; // Use $pdo instead of $db
-
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM merchant WHERE Email = ?");
-        $stmt->execute([$email]);
-
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        } else {
-            return null; // No merchant found
-        }
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
-        return null;
-    }
+function getMerchantByEmail($conn, $email) {
+    $query = "SELECT * FROM merchant WHERE Email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
 }
 
-// Function to fetch all merchants (Optional for validation or other purposes)
-function getAllMerchants() {
-    global $pdo;
-
+function getAllMerchants($conn) {
     $query = "SELECT * FROM merchant";
-    $stmt = $pdo->prepare($query);
+    return $conn->query($query)->fetch_all(MYSQLI_ASSOC);
+}
+
+function updatePassword($conn, $email, $new_password) {
+    $query = "UPDATE merchant SET Password = ? WHERE Email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $new_password, $email);
+    return $stmt->execute();
+}
+
+function getMerchantById($conn, $merchantId) {
+    $query = "SELECT * FROM merchant WHERE MerchantId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $merchantId);
     $stmt->execute();
-    
-    // Return all fetched rows
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt->get_result()->fetch_assoc();
 }
 
-// Function to update merchant password (in case of forgot password or admin update)
-function updatePassword($email, $new_password) {
-    global $pdo;
-
-    // Prepare SQL query to update password
-    $query = "UPDATE merchant SET Password = :password WHERE Email = :email";
-    $stmt = $pdo->prepare($query);
-
-    // Bind the new password and email to the query
-    $stmt->bindParam(':password', $new_password);
-    $stmt->bindParam(':email', $email);
-
-    // Execute the query and return success/failure
+function updateMerchantDetails($conn, $merchant_id, $name, $email, $business_name, $password) {
+    $query = "UPDATE merchant SET Name = ?, Email = ?, BusinessName = ?, Password = ? WHERE MerchantId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssssi", $name, $email, $business_name, $password, $merchant_id);
     return $stmt->execute();
 }
 
-// Function to fetch merchant data by MerchantId (for profile view)
-function getMerchantById($merchantId) {
-    global $pdo; // Use $pdo instead of $db
-
-    // Debugging: Check if $merchantId is set
-    if (!$merchantId) {
-        echo "Merchant ID is not set!";
-        exit(); // Stop execution if the ID is not set
-    }
-
-    try {
-        // Query to fetch merchant details based on MerchantId
-        $stmt = $pdo->prepare("SELECT * FROM merchant WHERE MerchantId = ?");
-        $stmt->execute([$merchantId]);
-
-        // Debugging: Check if any row is found
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        } else {
-            echo "No merchant found for MerchantId: $merchantId";
-            return null; // No data found for the given MerchantId
-        }
-    } catch (Exception $e) {
-        // Log the error
-        echo "Database error: " . $e->getMessage();
-        return null; // Return null if there's an error
-    }
-}
-
-// Function to update merchant profile details
-function updateMerchantDetails($merchant_id, $name, $email, $business_name, $password) {
-    global $pdo;
-
-    // Update SQL query
-    $query = "UPDATE merchant SET Name = :name, Email = :email, BusinessName = :business_name, Password = :password WHERE MerchantId = :merchant_id";
-    $stmt = $pdo->prepare($query);
-
-    // Bind the data to the query
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':business_name', $business_name);
-    $stmt->bindParam(':password', $password);
-    $stmt->bindParam(':merchant_id', $merchant_id);
-
-    // Execute the query and return success/failure
-    return $stmt->execute();
-}
-
-// Function to fetch all pending loans
-function getPendingLoans() {
-    global $pdo;
-
+function getPendingLoans($conn) {
     $query = "SELECT * FROM loan WHERE Status = 'Pending'";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $conn->query($query)->fetch_all(MYSQLI_ASSOC);
 }
 
-
-// Function to approve a loan
-function approveLoan($loanId) {
-    global $pdo;
-
-    $query = "UPDATE loan SET Status = 'Approved' WHERE LoanId = :loanId";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':loanId', $loanId);
-
+function approveLoan($conn, $loanId) {
+    $query = "UPDATE loan SET Status = 'Approved' WHERE LoanId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $loanId);
     return $stmt->execute();
 }
 
-// Function to decline a loan
-function declineLoan($loanId) {
-    global $pdo;
-
-    // Prepare the query to update the loan status to 'Declined'
-    $query = "UPDATE loan SET Status = 'Declined' WHERE LoanId = :loanId";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':loanId', $loanId, PDO::PARAM_INT);
-
-    // Execute and return success/failure
+function declineLoan($conn, $loanId) {
+    $query = "UPDATE loan SET Status = 'Declined' WHERE LoanId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $loanId);
     return $stmt->execute();
 }
 
-// Function to get customer name by CustomerId
-function getCustomerNameById($customerId) {
-    global $pdo;
-
+function getCustomerNameById($conn, $customerId) {
     $query = "SELECT Name FROM customer WHERE CustomerId = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([$customerId]);
-
-    $customer = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $customer ? $customer['Name'] : 'Unknown';
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $customerId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc()['Name'] ?? 'Unknown';
 }
 
-// Function to update the bank account balance
-function updateBankAccountBalance($customerId, $loanAmount) {
-    global $pdo;
-
-    // SQL query to update the bank account balance
-    $query = "UPDATE bankaccount SET Balance = Balance + :loanAmount WHERE CustomerId = :customerId";
-    
-    // Prepare the statement
-    $stmt = $pdo->prepare($query);
-    
-    // Bind the parameters
-    $stmt->bindParam(':loanAmount', $loanAmount, PDO::PARAM_STR);
-    $stmt->bindParam(':customerId', $customerId, PDO::PARAM_INT);
-    
-    // Execute the query and return success/failure
+function updateBankAccountBalance($conn, $customerId, $loanAmount) {
+    $query = "UPDATE bankaccount SET Balance = Balance + ? WHERE CustomerId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("di", $loanAmount, $customerId);
     return $stmt->execute();
 }
 
-function getLoanDetailsById($loanId) {
-    global $pdo;
-
-    $query = "SELECT * FROM loan WHERE LoanId = :loanId";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':loanId', $loanId, PDO::PARAM_INT);
+function getLoanDetailsById($conn, $loanId) {
+    $query = "SELECT * FROM loan WHERE LoanId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $loanId);
     $stmt->execute();
-
-    return $stmt->fetch(PDO::FETCH_ASSOC);  // Return loan details
+    return $stmt->get_result()->fetch_assoc();
 }
 
-// Function to update loan status
-function updateLoanStatus($loanId, $status) {
-    global $pdo;
-
-    $query = "UPDATE loan SET Status = :status WHERE LoanId = :loanId";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':status', $status, PDO::PARAM_STR);
-    $stmt->bindParam(':loanId', $loanId, PDO::PARAM_INT);
-
-    return $stmt->execute();  // Return success/failure
+function updateLoanStatus($conn, $loanId, $status) {
+    $query = "UPDATE loan SET Status = ? WHERE LoanId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("si", $status, $loanId);
+    return $stmt->execute();
 }
 
-// Function to fetch all customers from the database
-function getCustomers() {
-    global $pdo;
+function getCustomers($conn) {
+    $query = "SELECT CustomerId, Name, Email, Phone FROM customer";
+    return $conn->query($query)->fetch_all(MYSQLI_ASSOC);
+}
 
-    $query = "SELECT CustomerId, Name, Email, Phone FROM customer"; // Exclude password for security
-    $stmt = $pdo->prepare($query);
+function getAllFeedback($conn) {
+    $query = "SELECT * FROM feedback ORDER BY CreatedAt DESC";
+    return $conn->query($query)->fetch_all(MYSQLI_ASSOC);
+}
+
+function getCustomerDetails($conn, $customerId) {
+    $query = "SELECT Name, Email, Phone FROM customer WHERE CustomerId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $customerId);
     $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt->get_result()->fetch_assoc();
 }
 
-function getAllFeedback() {
-    global $pdo;
-    
-    try {
-        $query = "SELECT * FROM feedback ORDER BY CreatedAt DESC";
-        $stmt = $pdo->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        die("Error fetching feedback: " . $e->getMessage());
-    }
+function getCustomersD($conn) {
+    $query = "SELECT CustomerId, Name FROM customer";
+    return $conn->query($query)->fetch_all(MYSQLI_ASSOC);
 }
 
-// Function to fetch customer details by ID
-function getCustomerDetails($customerId) {
-    global $pdo;
-    $sql = "SELECT Name, Email, Phone FROM customer WHERE CustomerId = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$customerId]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-// Function to fetch all customers
-function getCustomersD() {
-    global $pdo;
-    $sql = "SELECT CustomerId, Name FROM customer";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
-// Optional: Function to close the database connection (not always necessary with PDO)
-function closeConnection() {
-    global $pdo;
-    $pdo = null; // Close connection
+function closeConnection($conn) {
+    $conn->close();
 }
 ?>
+
